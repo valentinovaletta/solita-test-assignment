@@ -28,7 +28,7 @@ class JourneyController extends Controller
     public function addJourney(Request $request){
 
         // Invalid Token
-        if(!($token = $request->bearerToken() == ENV('API_TOKEN'))){
+        if(!($request->bearerToken() == ENV('API_TOKEN'))){
             return response()->json(['success' => false, 'error' => 'Invalid Token'.$request->bearerToken()]);
         }
 
@@ -45,6 +45,10 @@ class JourneyController extends Controller
 
         if($validate->fails()){
             return response()->json(['success' => false, 'errors'=>$validate->errors()]);
+        }
+
+        if($request->header('X-Header-Test')){
+            return response()->json(['success' => true, 'message'=>'Passed']);
         }
 
         $addJourney = Journey::insert($request->all());
