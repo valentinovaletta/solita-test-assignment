@@ -1,66 +1,70 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+Hello, everyone. This is a test assignment for Solita Dev Academy
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+The task was to create a web application that fetches data from database and represents them in some appropriate way.
 
-## About Laravel
+So, what did i do.
+-used Laravel and PHP for backend.
+-used livewire to make data lazy load from db
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+-wrote a seeder that can parse *.csv files and fill database with ~3M entries.
+-used open leaflet library to add a map for bicycle stations and journeys.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+-wrote an api endpoint to add new journey. 
+-unit tests check if whole application and separate page work correctly.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+-implemented the project on hosting https://solita.arcadepub.ru/
 
-## Learning Laravel
+*Data import
+In order to fill the database with all entries firstly we need to make all tables. There is a migrations that help us with this. When all tables are created we can fill them with data. 
+There is an artisan command for that purpose
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+php artisan migrate --seed
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+*Journey list 
+The page https://solita.arcadepub.ru/journeys shows a table with all entry list. 
+There are about 3M etries, so i fetched only first page and made a lazyload system with laravel livewire for other pages.
+There are also real-time search and sort functions.
+! Unfortunately, livewire doesn't allow to change frontend elements with easy. So, i didn't create filtering feature and icons aren't changed after click.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+*Station list
+The page https://solita.arcadepub.ru/stations shows a table with all stations. 
+There are only about 1k entries, that's why i used laravel pagination system here.
 
-## Laravel Sponsors
+*Single journey view
+The page https://solita.arcadepub.ru/journey/1 shows a single journey information and draws a map if there is enough data.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+*Single station view
+The page https://solita.arcadepub.ru/station/1 shows a single station information.
+-Total number of journeys starting from the station
+-Total number of journeys ending at the station
+-The average distance of a journey starting from the station
+-The average distance of a journey ending at the station
+-Top 5 most popular return stations for journeys starting from the station
+-Top 5 most popular departure stations for journeys ending at the station
+-And shows the station on a map.
 
-### Premium Partners
+*API 
+You can use an API endpoint to add a new journey. 
+The endpoint http://solita.arcadepub.ru/api/journeys expects a POST request with all data. 
+! Donn't forget about Bearer Authorization Header
+The token is "AAAAAAAAAAAAAAAAAAAAAMLheAAAAAAA0%2BuSeid%2BULvsea4JtiGRiSDSJSI%3DEUifiRBkKG5E2XzMDjRfl76ZC9Ub0wnz4XsNiRVBChTYbJcE3F"
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+Curl request example: 
 
-## Contributing
+curl -X POST -H 'Authorization: Bearer AAAAAAAAAAAAAAAAAAAAAMLheAAAAAAA0%2BuSeid%2BULvsea4JtiGRiSDSJSI%3DEUifiRBkKG5E2XzMDjRfl76ZC9Ub0wnz4XsNiRVBChTYbJcE3F' -H 'Content-Type: application/x-www-form-urlencoded' -i 'http://solita.arcadepub.ru/api/journeys' --data 
+'departure_time=2009-10-16T11:11:11
+&return_time=2009-10-16T11:11:11
+&departure_station_id=123
+&departure_station_name=asd
+&return_station_id=123
+&return_station_name=asd
+&covered_distance=123
+&duration=1232'
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+*What i couldn't do.
 
-## Code of Conduct
+1) I wanted to try the laravel livewire but it doesn't allow to work with frontend. So, buttons and other elements that are supposed to be dynamic aren't changed.
+2) It would be better to use react or vue, but I'm not good at with them enough.
+3) I faced with problems when I tried to implement this project in a docker container. I clarified that php container had some issues with access permissions and web server container couldn't access the php files. i'm still on my way to deal with it. But there is not dockerfiles in this project yet.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+I suppose there is plenty of work to run this project on local machine without docker. But you can check it out on https://solita.arcadepub.ru/
